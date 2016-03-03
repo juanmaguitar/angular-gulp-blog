@@ -120,14 +120,14 @@ gulp.task('css', function(){
   gulp.src('./app/stylesheets/main.styl')
     .pipe( stylus({ use: nib() }) )
     .pipe( gulp.dest('./app/stylesheets') )
-    .pipe( webserver.reload() );
+    .pipe( connect.reload() );
 });
 
 /* -- Task: html -- */
 // Recarga el navegador cuando hay cambios en el HTML
 gulp.task('html', function(){
   gulp.src('./app/**/*.html')
-    .pipe( webserver.reload() );
+    .pipe( connect.reload() );
 });
 
 /* -- Task: watch -- */

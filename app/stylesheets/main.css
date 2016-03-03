@@ -11,6 +11,7 @@
   src: local('Raleway'), url("//themes.googleusercontent.com/static/fonts/raleway/v6/cIFypx4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff") format('woff');
 }
 body {
+  background-color: #f00;
   font-family: 'Raleway-Light';
   font-size: 16px;
 }

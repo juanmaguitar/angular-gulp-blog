@@ -1,144 +1,128 @@
-'use strict';
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+var autoprefixer = require('gulp-autoprefixer');
+var sourcemaps = require('gulp-sourcemaps');
+var browserSync = require('browser-sync');
+var useref = require('gulp-useref');
+var uglify = require('gulp-uglify');
+var gulpIf = require('gulp-if');
+var cssnano = require('gulp-cssnano');
+var imagemin = require('gulp-imagemin');
+var cache = require('gulp-cache');
+var del = require('del');
+var runSequence = require('run-sequence');
+var stylus = require('gulp-stylus');
+var nib = require('nib');
 
-var gulp = require('gulp'),
-    webserver = require('gulp-webserver'),
-    connect = require('gulp-connect'),
-    historyApiFallback = require('connect-history-api-fallback')
+var inject = require('gulp-inject');
+var wiredep = require('wiredep').stream;
 
-var stylus = require('gulp-stylus'),
-    nib = require('nib');
 
-var jshint = require('gulp-jshint');
-//var stylish = require('jshint-stylish');
+// Development Tasks
+// -----------------
 
-var inject = require('gulp-inject'),
-    wiredep = require('wiredep').stream;
-
-var templateCache = require('gulp-angular-templatecache');
-
-var gulpif = require('gulp-if'),
-    minifyCss = require('gulp-minify-css'),
-    useref = require('gulp-useref'),
-    uglify = require('gulp-uglify');
-
-/* -- Task: compress -- */
-gulp.task('compress', function(){
-
-    gulp.src('./app/index.html')
-      .pipe( useref() )
-      .pipe( gulpif('*.js', uglify({ mangle:false })) )
-      .pipe( gulpif('*.css', minifyCss()) )
-      .pipe( gulp.dest('./dist') );
-
-});
-
-/* -- Task: copy -- */
-gulp.task('copy', function() {
-
-  gulp.src('./app/index.html')
-    .pipe(useref())
-    .pipe( gulp.dest('./dist') );
-
-  gulp.src('./app/lib/fontawesome/fonts/**')
-    .pipe(gulp.dest('./dist/fonts'));
-
+// Start browserSync server
+gulp.task('browserSync', function() {
+  browserSync({
+    server: {
+      baseDir: 'app'
+    }
+  })
 })
 
-/* -- Task: templates -- */
-gulp.task('templates', function(){
-  gulp.src('./app/views/**/*.tpl.html')
-    .pipe(templateCache({
-      root: 'views/',
-      module: 'blog.templates',
-      standalone: true
-    }))
-    .pipe( gulp.dest('./app/scripts') );
-});
 
-/* -- Task: inject -- */
 // Busca en las carpetas de estilos y javascript los archivos que hayamos creado
 // para inyectarlos en el index.HTML
 gulp.task('inject', function(){
   var sources = gulp.src(['./app/scripts/**/*.js','./app/stylesheets/**/*.css']);
-  return gulp.src('index.html', { cwd: './app' })
+  return gulp.src('index.html', { cwd: 'app' })
     .pipe(inject(sources, {
       read: false,
       ignorePath: '/app'
     }))
-    .pipe( gulp.dest('./app') );
+    .pipe( gulp.dest('app') );
 });
 
-/* -- Task: wiredep -- */
 // Inyecta las librerias que instalemos via Bower
 gulp.task('wiredep', function(){
-  gulp.src('./app/index.html')
+  gulp.src('app/index.html')
     .pipe( wiredep({
-      directory: './app/lib'
+      directory: 'app/lib'
     }))
-    .pipe( gulp.dest('./app') );
+    .pipe( gulp.dest('app') );
 });
 
-/* -- Task: jshint -- */
-// Busca errores en el JS y nos los muestra por pantalla
-gulp.task('jshint', function() {
-  return gulp.src('./app/scripts/**/*.js')
-    .pipe( jshint('.jshintrc') )
-    .pipe( jshint.reporter('jshint-stylish') )
-    .pipe( jshint.reporter('fail') );
-});
 
-/* -- Task: webserver -- */
-// Lanza un servidor local y abre el navegador
-gulp.task('server', function() {
-  gulp.src('app')
-    .pipe(webserver({
-      root: './app',
-      hostname: '0.0.0.0',
-      port: 8080,
-      livereload: true,
-      open: true
+gulp.task('sass', function() {
+  return gulp.src('app/scss/**/*.scss') // Gets all files ending with .scss in app/scss and children dirs
+    .pipe(sass()) // Passes it through a gulp-sass
+    .pipe(gulp.dest('app/css')) // Outputs it in the css folder
+    .pipe(browserSync.reload({ // Reloading with Browser Sync
+      stream: true
     }));
+})
+
+
+// Watchers
+gulp.task('watch', function() {
+  gulp.watch('app/scss/**/*.scss', ['sass']);
+  gulp.watch('app/*.html', browserSync.reload);
+  gulp.watch('app/js/**/*.js', browserSync.reload);
+})
+
+// Optimization Tasks
+// ------------------
+
+// Optimizing CSS and JavaScript
+gulp.task('useref', function() {
+
+  return gulp.src('app/*.html')
+    .pipe(useref())
+    .pipe(gulpIf('*.js', uglify()))
+    .pipe(gulpIf('*.css', cssnano()))
+    .pipe(gulp.dest('dist'));
 });
 
-/* -- Task: webserver-dist -- */
-// Lanza un servidor local y abre el navegador
-gulp.task('server-dist', function() {
-  gulp.src('app')
-    .pipe(webserver({
-      root: './dist',
-      hostname: '0.0.0.0',
-      port: 8080,
-      livereload: true,
-      open: true
-    }));
+// Optimizing Images
+gulp.task('images', function() {
+  return gulp.src('app/images/**/*.+(png|jpg|jpeg|gif|svg)')
+    // Caching images that ran through imagemin
+    .pipe(cache(imagemin({
+      interlaced: true,
+    })))
+    .pipe(gulp.dest('dist/images'))
 });
 
+// Copying fonts
+gulp.task('fonts', function() {
+  return gulp.src('app/fonts/**/*')
+    .pipe(gulp.dest('dist/fonts'))
+})
 
-/* -- Task: css -- */
-// Pre-procesa archivos Stylus a CSS y recarga los cambios
-gulp.task('css', function(){
-  gulp.src('./app/stylesheets/main.styl')
-    .pipe( stylus({ use: nib() }) )
-    .pipe( gulp.dest('./app/stylesheets') )
-    .pipe( connect.reload() );
+// Cleaning
+gulp.task('clean', function() {
+  return del.sync('dist').then(function(cb) {
+    return cache.clearAll(cb);
+  });
+})
+
+gulp.task('clean:dist', function() {
+  return del.sync(['dist/**/*', '!dist/images', '!dist/images/**/*']);
 });
 
-/* -- Task: html -- */
-// Recarga el navegador cuando hay cambios en el HTML
-gulp.task('html', function(){
-  gulp.src('./app/**/*.html')
-    .pipe( connect.reload() );
-});
+// Build Sequences
+// ---------------
 
-/* -- Task: watch -- */
-// Vigila cambios que se produzcan en el código
-// y lanza las tareas relacionadas
-gulp.task('watch', function(){
-  gulp.watch(['./app/**/*.html'],['html']);
-  gulp.watch(['./app/stylesheets/**/*.styl'],['css']);
-  gulp.watch(['./app/scripts/**/*.js'],['jshint']);
-  gulp.watch(['./bower.json'],['wiredep']);
-});
+gulp.task('default', function(callback) {
+  runSequence(['inject', 'wiredep', 'browserSync', 'watch'],
+    callback
+  )
+})
 
-gulp.task('default', ['server', 'inject', 'wiredep', 'watch']);
-gulp.task('build', ['templates', 'compress', 'copy']);
+gulp.task('build', function(callback) {
+  runSequence(
+    'clean:dist',
+    ['sass', 'useref', 'images', 'fonts'],
+    callback
+  )
+})

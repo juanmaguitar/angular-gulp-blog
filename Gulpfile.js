@@ -1,128 +1,39 @@
+'use strict';
+
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var sourcemaps = require('gulp-sourcemaps');
-var browserSync = require('browser-sync');
-var useref = require('gulp-useref');
-var uglify = require('gulp-uglify');
-var gulpIf = require('gulp-if');
-var cssnano = require('gulp-cssnano');
-var imagemin = require('gulp-imagemin');
-var cache = require('gulp-cache');
-var del = require('del');
-var runSequence = require('run-sequence');
-var stylus = require('gulp-stylus');
-var nib = require('nib');
+var taskLoader = require('gulp-simple-task-loader');
+var loadPlugins = require('gulp-load-plugins');
 
-var inject = require('gulp-inject');
-var wiredep = require('wiredep').stream;
+var configPlugins = {
+	// DEBUG: true,
+	pattern: ['gulp-*', 'gulp.*', '[a-z]*'],
+}
+var plugins = loadPlugins( configPlugins );
 
+var configProject = {
 
-// Development Tasks
-// -----------------
+	// files pattern path
+	jsFiles: 'app/scripts/**/*.js',
+	cssFiles: 'app/stylesheets/**/*.css',
+	tplFiles: 'app/views/**/*.tpl.html',
 
-// Start browserSync server
-gulp.task('browserSync', function() {
-  browserSync({
-    server: {
-      baseDir: 'app'
-    }
-  })
-})
+	// dirs path
+	dirBase: 'app',
+	dirDist: 'dist',
+	dirScripts: 'app/scripts',
+	dirLib: 'app/lib',
 
+	// files path
+	pathIndex: 'app/index.html',
 
-// Busca en las carpetas de estilos y javascript los archivos que hayamos creado
-// para inyectarlos en el index.HTML
-gulp.task('inject', function(){
-  var sources = gulp.src(['./app/scripts/**/*.js','./app/stylesheets/**/*.css']);
-  return gulp.src('index.html', { cwd: 'app' })
-    .pipe(inject(sources, {
-      read: false,
-      ignorePath: '/app'
-    }))
-    .pipe( gulp.dest('app') );
-});
+}
 
-// Inyecta las librerias que instalemos via Bower
-gulp.task('wiredep', function(){
-  gulp.src('app/index.html')
-    .pipe( wiredep({
-      directory: 'app/lib'
-    }))
-    .pipe( gulp.dest('app') );
-});
+var configTasks = {
+	taskDirectory: 'gulp-tasks',
+	filenameDelimiter: '-',
+	tasknameDelimiter: ':',
+	plugins: plugins,
+	config: configProject
+}
 
-
-gulp.task('sass', function() {
-  return gulp.src('app/scss/**/*.scss') // Gets all files ending with .scss in app/scss and children dirs
-    .pipe(sass()) // Passes it through a gulp-sass
-    .pipe(gulp.dest('app/css')) // Outputs it in the css folder
-    .pipe(browserSync.reload({ // Reloading with Browser Sync
-      stream: true
-    }));
-})
-
-
-// Watchers
-gulp.task('watch', function() {
-  gulp.watch('app/scss/**/*.scss', ['sass']);
-  gulp.watch('app/*.html', browserSync.reload);
-  gulp.watch('app/js/**/*.js', browserSync.reload);
-})
-
-// Optimization Tasks
-// ------------------
-
-// Optimizing CSS and JavaScript
-gulp.task('useref', function() {
-
-  return gulp.src('app/*.html')
-    .pipe(useref())
-    .pipe(gulpIf('*.js', uglify()))
-    .pipe(gulpIf('*.css', cssnano()))
-    .pipe(gulp.dest('dist'));
-});
-
-// Optimizing Images
-gulp.task('images', function() {
-  return gulp.src('app/images/**/*.+(png|jpg|jpeg|gif|svg)')
-    // Caching images that ran through imagemin
-    .pipe(cache(imagemin({
-      interlaced: true,
-    })))
-    .pipe(gulp.dest('dist/images'))
-});
-
-// Copying fonts
-gulp.task('fonts', function() {
-  return gulp.src('app/fonts/**/*')
-    .pipe(gulp.dest('dist/fonts'))
-})
-
-// Cleaning
-gulp.task('clean', function() {
-  return del.sync('dist').then(function(cb) {
-    return cache.clearAll(cb);
-  });
-})
-
-gulp.task('clean:dist', function() {
-  return del.sync(['dist/**/*', '!dist/images', '!dist/images/**/*']);
-});
-
-// Build Sequences
-// ---------------
-
-gulp.task('default', function(callback) {
-  runSequence(['inject', 'wiredep', 'browserSync', 'watch'],
-    callback
-  )
-})
-
-gulp.task('build', function(callback) {
-  runSequence(
-    'clean:dist',
-    ['sass', 'useref', 'images', 'fonts'],
-    callback
-  )
-})
+taskLoader( configTasks, gulp );

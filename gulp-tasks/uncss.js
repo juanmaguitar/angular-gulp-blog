@@ -17,13 +17,10 @@ module.exports = function( gulp, config, plugins ) {
 
 		var configUncss = { html: htmlFiles };
 
-		console.log (minCssFile)
-		console.log (configUncss)
-		console.log (dirDistCSS)
-
 		gulp.src( minCssFile )
 			.pipe( uncss(configUncss) )
 			.pipe( gulp.dest(dirDistCSS) );
 
 	};
+
 };

@@ -3,10 +3,12 @@
 module.exports = function( gulp, config, plugins ) {
 
 	var del = plugins.del;
+	var dirDist = config.dirDist;
+	var distFiles = dirDist + '/**/*';
 
 	return function()  {
 
-		del.sync(['dist/**/*']);
+		return del.sync( [distFiles] );
 
 	};
 };

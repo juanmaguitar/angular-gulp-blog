@@ -13,10 +13,10 @@ module.exports = function( gulp, config, plugins ) {
 
 		var configWiredep = { directory: dirLib };
 
-	  gulp.src( pathIndex )
-	    .pipe( wiredep(configWiredep) )
-	    .pipe( gulp.dest(dirBase) );
-
+		gulp.src( pathIndex )
+			.pipe( wiredep(configWiredep) )
+			.pipe( gulp.dest(dirBase) );
 
 	};
+
 };

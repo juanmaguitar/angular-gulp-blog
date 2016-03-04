@@ -18,9 +18,10 @@ module.exports = function( gulp, config, plugins ) {
 			templateHeader : TEMPLATE_HEADER
 		};
 
-		gulp.src('./app/views/**/*.tpl.html')
+		return gulp.src('./app/views/**/*.tpl.html')
 			.pipe( templateCache(configTplCache) )
 			.pipe( gulp.dest('./app/scripts') );
 
 	};
+
 };

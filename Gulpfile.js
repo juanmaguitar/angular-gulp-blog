@@ -12,19 +12,18 @@ var plugins = loadPlugins( configPlugins );
 
 var configProject = {
 
-	// files pattern path
-	jsFiles: 'app/scripts/**/*.js',
-	cssFiles: 'app/stylesheets/**/*.css',
-	tplFiles: 'app/views/**/*.tpl.html',
-
 	// dirs path
 	dirBase: 'app',
 	dirDist: 'dist',
-	dirScripts: 'app/scripts',
-	dirLib: 'app/lib',
 
-	// files path
-	pathIndex: 'app/index.html',
+	dirScripts: this.dirBase + '/scripts',
+	dirStyles: this.dirBase + '/stylesheets',
+	dirLib: this.dirBase + '/lib',
+
+	// files pattern path
+	jsFiles: '/js/**/*.js',
+	cssFiles: '/stylesheets/**/*.css',
+	tplFiles: '/views/**/*.tpl.html'
 
 }
 

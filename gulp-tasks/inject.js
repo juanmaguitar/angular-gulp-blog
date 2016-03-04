@@ -21,6 +21,7 @@ module.exports = function( gulp, config, plugins ) {
 		gulp.src('index.html', { cwd: dirBase })
 			.pipe( inject(sources, configInject) )
 			.pipe( gulp.dest(dirBase) );
+
 	};
 
 };

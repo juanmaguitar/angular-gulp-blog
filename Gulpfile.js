@@ -38,7 +38,6 @@ var configProject = {
 	dirDistImg: 'dist/img',
 	dirDistFonts: 'dist/fonts',
 
-
 	// files pattern path
 	jsPatternFiles: '/js/**/*.js',
 	stylusPatternFiles: '/stylus/**/*.styl',

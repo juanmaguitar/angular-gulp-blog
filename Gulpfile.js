@@ -21,6 +21,7 @@ var configProject = {
 	dirStylus: 'app/stylesheets/stylus',
 	dirCss: 'app/stylesheets/css',
 	dirTpl: 'app/views',
+	dirImg: 'app/images',
 	dirLib: 'app/lib',
 	fontsPath : 'app/lib/components-font-awesome/fonts/**',
 
@@ -34,8 +35,8 @@ var configProject = {
 	// dist paths
 	dirDistJs: 'dist/js',
 	dirDistCss: 'dist/css',
+	dirDistImg: 'dist/img',
 	dirDistFonts: 'dist/fonts',
-
 
 
 	// files pattern path

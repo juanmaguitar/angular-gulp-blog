@@ -6,7 +6,10 @@ module.exports = function( gulp, config, plugins ) {
 
 	return function() {
 
-		runSequence(['inject', 'wiredep', 'server', 'watch'])
+		runSequence(
+			'build',
+			'server:dist'
+		)
 
 	};
 

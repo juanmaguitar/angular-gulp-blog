@@ -16,14 +16,33 @@ var configProject = {
 	dirBase: 'app',
 	dirDist: 'dist',
 
-	dirScripts: this.dirBase + '/scripts',
-	dirStyles: this.dirBase + '/stylesheets',
-	dirLib: this.dirBase + '/lib',
+	// app paths
+	dirScripts: 'app/scripts',
+	dirStylus: 'app/stylesheets/stylus',
+	dirCss: 'app/stylesheets/css',
+	dirTpl: 'app/views',
+	dirLib: 'app/lib',
+	fontsPath : 'app/lib/components-font-awesome/fonts/**',
+
+	htmlFiles : [
+		'app/index.html',
+		'app/views/post-detail.tpl.html',
+		'app/views/post-list.tpl.html',
+		'app/views/post-create.tpl.html'
+	],
+
+	// dist paths
+	dirDistJs: 'dist/js',
+	dirDistCss: 'dist/css',
+	dirDistFonts: 'dist/fonts',
+
+
 
 	// files pattern path
-	jsFiles: '/js/**/*.js',
-	cssFiles: '/stylesheets/**/*.css',
-	tplFiles: '/views/**/*.tpl.html'
+	jsPatternFiles: '/js/**/*.js',
+	stylusPatternFiles: '/stylus/**/*.styl',
+	cssPatternFiles: '/css/**/*.css',
+	tplPatternFiles: '/views/**/*.tpl.html'
 
 }
 

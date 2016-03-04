@@ -3,8 +3,10 @@
 module.exports = function( gulp, config, plugins ) {
 
 	var templateCache = plugins.angularTemplatecache;
-	var tplFiles = config.tplFiles;
-	var cssFiles = config.cssFiles;
+
+	var dirTpl = config.dirTpl;
+	var tplFiles = dirTpl + '/**/*.tpl.html'
+
 	var dirScripts = config.dirScripts;
 
 	var TEMPLATE_HEADER = '"use strict";angular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {';
@@ -18,9 +20,9 @@ module.exports = function( gulp, config, plugins ) {
 			templateHeader : TEMPLATE_HEADER
 		};
 
-		return gulp.src('./app/views/**/*.tpl.html')
+		return gulp.src( tplFiles )
 			.pipe( templateCache(configTplCache) )
-			.pipe( gulp.dest('./app/scripts') );
+			.pipe( gulp.dest(dirScripts) );
 
 	};
 

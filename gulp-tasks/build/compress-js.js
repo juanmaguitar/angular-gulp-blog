@@ -3,10 +3,8 @@
 module.exports = function( gulp, config, plugins ) {
 
 	var uglify = plugins.uglify;
-	var jsFiles = config.jsFiles;
-	var dirDist = config.dirDist;
-	var distJsFiles = dirDist + jsFiles;
-	var distJsDir = dirDist + '/js';
+	var dirDistJs = config.dirDistJs;
+	var distJsFiles = dirDistJs + '/**/*.js';
 
 	return function()  {
 
@@ -14,7 +12,7 @@ module.exports = function( gulp, config, plugins ) {
 
 		return gulp.src( distJsFiles )
 			.pipe( uglify(configUglify) )
-			.pipe( gulp.dest( distJsDir ) );
+			.pipe( gulp.dest( dirDistJs ) );
 
 	};
 

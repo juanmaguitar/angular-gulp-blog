@@ -6,17 +6,18 @@ module.exports = function( gulp, config, plugins ) {
 
 	var stylus = plugins.stylus;
 	var nib = plugins.nib;
-	var connect = plugins.connect;
+	var browserSync = plugins.browserSync;
 
-	var dirStyles = config.dirStyles;
-	var mainStyleFile = dirStyles + '/main.styl';
+	var dirStylus = config.dirStylus;
+	var dirCss = config.dirCss;
+	var mainStyleFile = dirStylus + '/main.styl';
 
 	return function( ) {
 
 		gulp.src( mainStyleFile )
 			.pipe( stylus({ use: nib() }) )
-			.pipe( gulp.dest(dirStyles) )
-			.pipe( connect.reload() );
+			.pipe( gulp.dest(dirCss) )
+			.pipe( browserSync.stream() );
 
 	};
 

@@ -4,10 +4,11 @@
 
 module.exports = function( gulp, config, plugins ) {
 
-	var wiredep = plugins.wiredep;
-	var pathIndex = config.pathIndex;
+	var wiredep = plugins.wiredep.stream;;
+
 	var dirBase = config.dirBase;
 	var dirLib = config.dirLib;
+	var pathIndex = dirBase + '/index.html';
 
 	return function()  {
 
@@ -15,7 +16,8 @@ module.exports = function( gulp, config, plugins ) {
 
 		gulp.src( pathIndex )
 			.pipe( wiredep(configWiredep) )
-			.pipe( gulp.dest(dirBase) );
+			.pipe( gulp.dest(dirBase) )
+
 
 	};
 

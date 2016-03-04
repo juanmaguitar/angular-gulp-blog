@@ -6,9 +6,12 @@
 module.exports = function( gulp, config, plugins ) {
 
 	var inject = plugins.inject;
-	var jsFiles = config.jsFiles;
-	var cssFiles = config.cssFiles;
+
+	var dirScripts = config.dirScripts;
+	var dirCss = config.dirCss;
 	var dirBase = config.dirBase;
+	var jsFiles = dirScripts + '/**/*.js';
+	var cssFiles = dirCss + '/**/*.css ';
 
 	return function() {
 

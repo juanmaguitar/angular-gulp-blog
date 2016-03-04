@@ -3,10 +3,6 @@
 module.exports = function( gulp, config, plugins ) {
 
 	var useref = plugins.useref;
-	var uglify = plugins.uglify;
-	var cssnano = plugins.cssnano;
-	var gulpIf = plugins.if;
-
 
 	var dirBase = config.dirBase;
 	var dirDist = config.dirDist;

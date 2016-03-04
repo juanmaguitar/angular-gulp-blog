@@ -6,13 +6,7 @@ module.exports = function( gulp, config, plugins ) {
 
 	return function() {
 
-		runSequence(
-			'clean:dist',
-			['templates', 'fonts'],
-			'useref',
-			'uncss:minify',
-			'compress:js'
-		)
+		runSequence(['inject', 'wiredep', 'browserSync', 'watch'])
 
 	};
 
